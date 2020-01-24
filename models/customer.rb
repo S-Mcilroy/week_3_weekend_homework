@@ -71,16 +71,13 @@ class Customer
   end
 
   # Buying tickets should decrease the funds of the customer by the price
-  def remaining_funds()
+  def buy_tickets!()
      fees = 0
-     sql = "SELECT films.price FROM films INNER JOIN tickets
+     sql = "SELECT SUM (price) FROM films INNER JOIN tickets
      ON tickets.film_id = films.id WHERE tickets.customer_id = $1"
      values = [@id]
      results = SqlRunner.run(sql, values)
-     for charge in results
-       fees += charge["price"].to_i
-     end
-     return @funds - fees
+     return @funds - results[0]["sum"].to_i
    end
 
 
